@@ -35,12 +35,37 @@ router.post('/',async(request,response) =>{
     }
 })
 
-router.patch('/:id',getStudents,(request,response) =>{
-    response.send(`patching id ${request.params.id}`)
+router.patch('/:id',getStudents,async (request,response) =>{
+    // response.send(`patching id ${request.params.id}`)
+
+    //assigning the details sent by user to the only specified fields
+    
+    if (request.body.name != null){
+        response.student.name = request.body.name
+    }
+    if (request.body.enrolledDepartment != null){
+        response.student.enrolledDepartment = request.body.enrolledDepartment
+    }
+
+    
+    try{
+        const updateStudent = await response.student.save() // saving the details sent by user
+        response.status(201).json(updateStudent)
+    }
+    catch (error){
+        response.status(400).json({message:error.message})
+    }
 })
 
-router.delete('/:id',(request,response) => {
+router.delete('/:id',getStudents,async (request,response) => {
     response.send(`deleting the data with id ${request.params.id}`)
+    // try{
+    //     await response.student.deleteOne()
+    //     response.json({message:`Deleted ${response.student.name} and the `})
+    // }
+    // catch(error){
+    //     response.status(500).json({message:error.message})
+    // }
 })
 
 async function getStudents(request,response,next){
@@ -51,12 +76,13 @@ async function getStudents(request,response,next){
     if(student == null){
         return response.status(404).json({message:`cannot find user wit id ${request.params.id}`})
     }
+    response.student = student
+    next()
     }
     catch (error){
         return response.status(500).json({message:error.message})
     }
-    response.json(student)
-    next()
+    
 }
 
 module.exports = router
