@@ -7,7 +7,7 @@ const studentSchema = new mongoose.Schema({
         type:String,
         require:true
     },
-    enrollDepartment:{
+    enrolledDepartment:{
         type:String,
         require :true
     },

@@ -14,7 +14,7 @@ router.get('/',async(request,response) => {
 })
 //adding async await to 
 
-router.post('/',(request,response) =>{
+router.post('/',async(request,response) =>{
     // response.send("Details posted")
     const newStudent = new studentModel({
         name :request.body.name,
@@ -24,6 +24,9 @@ router.post('/',(request,response) =>{
     try {
         const student = await newStudent.save()
         response.status(200).json(student)
+    }
+    catch(error){
+        response.status(500).json({message:error.message})
     }
 })
 
