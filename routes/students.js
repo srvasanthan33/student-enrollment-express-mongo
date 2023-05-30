@@ -58,14 +58,14 @@ router.patch('/:id',getStudents,async (request,response) =>{
 })
 
 router.delete('/:id',getStudents,async (request,response) => {
-    response.send(`deleting the data with id ${request.params.id}`)
-    // try{
-    //     await response.student.deleteOne()
-    //     response.json({message:`Deleted ${response.student.name} and the `})
-    // }
-    // catch(error){
-    //     response.status(500).json({message:error.message})
-    // }
+    // response.send(`deleting the data with id ${request.params.id}`)
+    try{
+        await response.student.deleteOne()
+        response.json({message:`Deleted ${response.student.name} and the `})
+    }
+    catch(error){
+        response.status(500).json({message:error.message})
+    }
 })
 
 async function getStudents(request,response,next){
