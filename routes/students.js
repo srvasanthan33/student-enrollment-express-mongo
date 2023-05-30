@@ -2,6 +2,7 @@ const express = require("express")
 const router = express.Router()
 const studentModel = require('../models/students')
 
+//adding async await to 
 router.get('/',async(request,response) => {
     try{
         const students = await studentModel.find()
@@ -12,7 +13,11 @@ router.get('/',async(request,response) => {
         response.status(500).json({message:error.message})
     }
 })
-//adding async await to 
+
+router.get('/:id',getStudents,(request,response)=>{
+    response.status(200).json(response.student)
+})
+
 
 router.post('/',async(request,response) =>{
     // response.send("Details posted")
@@ -30,12 +35,28 @@ router.post('/',async(request,response) =>{
     }
 })
 
-router.patch('/:id',(request,response) =>{
+router.patch('/:id',getStudents,(request,response) =>{
     response.send(`patching id ${request.params.id}`)
 })
 
 router.delete('/:id',(request,response) => {
     response.send(`deleting the data with id ${request.params.id}`)
 })
+
+async function getStudents(request,response,next){
+    let student
+    // should not initialize or create variables inside try statement
+    try{
+    student = await studentModel.findById(request.params.id)
+    if(student == null){
+        return response.status(404).json({message:`cannot find user wit id ${request.params.id}`})
+    }
+    }
+    catch (error){
+        return response.status(500).json({message:error.message})
+    }
+    response.json(student)
+    next()
+}
 
 module.exports = router
